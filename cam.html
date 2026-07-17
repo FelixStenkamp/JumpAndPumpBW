@@ -67,16 +67,78 @@
     flex:1;
     width:100%;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
     box-sizing:border-box;
+    padding:20px;
+    gap:20px;
   }
-  .coming-soon{
-    font-size:48px;
+  .cam-stage{
+    position:relative;
+    width:90%;
+    max-width:800px;
+    aspect-ratio:4/3;
+    background:#000;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 16px rgba(0,0,0,.25);
+  }
+  .cam-stage video,
+  .cam-stage canvas,
+  .cam-stage img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .countdown-overlay{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.35);
+    font-size:120px;
     font-weight:bold;
-    font-style:italic;
-    color:#a81815;
+    color:#fff;
+    text-shadow:0 4px 12px rgba(0,0,0,.5);
+  }
+  .status-text{
+    font-size:16px;
+    color:#555;
     text-align:center;
+    min-height:20px;
+  }
+  .controls{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .action-btn{
+    background:#a81815;
+    color:#fff;
+    border:none;
+    font-weight:bold;
+    font-size:18px;
+    padding:14px 28px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .action-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+  }
+  .action-btn:disabled{
+    background:#ccc;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+  }
+  .action-btn.secondary{
+    background:#666;
   }
 </style>
 </head>
@@ -91,8 +153,96 @@
   </div>
 
   <div class="content">
-    <div class="coming-soon">Coming Soon</div>
+    <div class="cam-stage" id="camStage">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas" style="display:none;"></canvas>
+      <img id="photo" style="display:none;" alt="Aufgenommenes Bild">
+      <div class="countdown-overlay" id="countdownOverlay">5</div>
+    </div>
+
+    <div class="status-text" id="statusText">Kamera wird gestartet …</div>
+
+    <div class="controls">
+      <button class="action-btn" id="captureBtn" disabled>📸 Bild aufnehmen</button>
+      <button class="action-btn secondary" id="retakeBtn" style="display:none;">↻ Neues Bild</button>
+    </div>
   </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const statusText = document.getElementById('statusText');
+    const captureBtn = document.getElementById('captureBtn');
+    const retakeBtn = document.getElementById('retakeBtn');
+
+    let stream = null;
+
+    async function startCamera(){
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        video.srcObject = stream;
+        statusText.textContent = "Kamera bereit – Bild aufnehmen, sobald du soweit bist.";
+        captureBtn.disabled = false;
+      }catch(err){
+        statusText.textContent = "Kamera konnte nicht gestartet werden: " + err.message;
+      }
+    }
+
+    function runCountdownAndCapture(){
+      captureBtn.disabled = true;
+      let count = 5;
+      countdownOverlay.style.display = "flex";
+      countdownOverlay.textContent = count;
+      statusText.textContent = "Bitte lächeln …";
+
+      const timer = setInterval(() => {
+        count--;
+        if(count > 0){
+          countdownOverlay.textContent = count;
+        } else {
+          clearInterval(timer);
+          countdownOverlay.style.display = "none";
+          takePhoto();
+        }
+      }, 1000);
+    }
+
+    function takePhoto(){
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      photo.src = canvas.toDataURL('image/png');
+      photo.style.display = "block";
+      video.style.display = "none";
+
+      if(stream){
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      statusText.textContent = "Bild aufgenommen!";
+      captureBtn.style.display = "none";
+      retakeBtn.style.display = "inline-block";
+    }
+
+    function retake(){
+      photo.style.display = "none";
+      video.style.display = "block";
+      retakeBtn.style.display = "none";
+      captureBtn.style.display = "inline-block";
+      captureBtn.disabled = false;
+      statusText.textContent = "Kamera wird neu gestartet …";
+      startCamera();
+    }
+
+    captureBtn.addEventListener('click', runCountdownAndCapture);
+    retakeBtn.addEventListener('click', retake);
+
+    startCamera();
+  </script>
 
 </body>
 </html>
