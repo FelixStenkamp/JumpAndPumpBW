@@ -111,17 +111,27 @@
       rrp.ShowTimerLogo = true;
 
       // RaceResult zeigt die Bild-URL nur als reinen Text an – wir wandeln das automatisch in ein echtes Bild um
+      const IMAGE_URL_REGEX = /https?:\/\/\S+\.(?:jpg|jpeg|png|gif|webp)(?:\?\S*)?/i;
+
       function replaceImageUrlsWithImages(container){
         const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
         const nodesToReplace = [];
         let node;
         while(node = walker.nextNode()){
-          const text = node.textContent.trim();
-          if(/^https?:\/\/\S+\.(jpg|jpeg|png|gif|webp)(\?\S*)?$/i.test(text)){
-            nodesToReplace.push({ node, url: text });
+          const match = node.textContent.match(IMAGE_URL_REGEX);
+          if(match){
+            nodesToReplace.push({ node, match });
           }
         }
-        nodesToReplace.forEach(({ node, url }) => {
+        nodesToReplace.forEach(({ node, match }) => {
+          const url = match[0];
+          const fullText = node.textContent;
+          const before = fullText.slice(0, match.index);
+          const after = fullText.slice(match.index + url.length);
+
+          const fragment = document.createDocumentFragment();
+          if(before.trim()) fragment.appendChild(document.createTextNode(before));
+
           const img = document.createElement('img');
           img.src = url;
           img.alt = "Zielfoto";
@@ -129,7 +139,11 @@
           img.style.borderRadius = "8px";
           img.style.display = "block";
           img.style.margin = "12px 0";
-          node.parentNode.replaceChild(img, node);
+          fragment.appendChild(img);
+
+          if(after.trim()) fragment.appendChild(document.createTextNode(after));
+
+          node.parentNode.replaceChild(fragment, node);
         });
       }
 
