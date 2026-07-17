@@ -109,6 +109,35 @@
 
       let rrp = new RRParticipantView(document.getElementById("divRRParticipantView"), RR_EVENT_ID, "details", pid, bib);
       rrp.ShowTimerLogo = true;
+
+      // RaceResult zeigt die Bild-URL nur als reinen Text an – wir wandeln das automatisch in ein echtes Bild um
+      function replaceImageUrlsWithImages(container){
+        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+        const nodesToReplace = [];
+        let node;
+        while(node = walker.nextNode()){
+          const text = node.textContent.trim();
+          if(/^https?:\/\/\S+\.(jpg|jpeg|png|gif|webp)(\?\S*)?$/i.test(text)){
+            nodesToReplace.push({ node, url: text });
+          }
+        }
+        nodesToReplace.forEach(({ node, url }) => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = "Zielfoto";
+          img.style.maxWidth = "100%";
+          img.style.borderRadius = "8px";
+          img.style.display = "block";
+          img.style.margin = "12px 0";
+          node.parentNode.replaceChild(img, node);
+        });
+      }
+
+      const targetDiv = document.getElementById("divRRParticipantView");
+      const observer = new MutationObserver(() => {
+        replaceImageUrlsWithImages(targetDiv);
+      });
+      observer.observe(targetDiv, { childList: true, subtree: true });
     </script>
   </div>
 
