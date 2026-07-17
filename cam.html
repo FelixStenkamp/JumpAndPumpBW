@@ -140,6 +140,55 @@
   .action-btn.secondary{
     background:#666;
   }
+  .action-btn.save{
+    background:#2e7d32;
+  }
+
+  /* Bib-Nummer Eingabe-Overlay */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+    box-sizing:border-box;
+  }
+  .modal-box{
+    background:#fff;
+    border-radius:12px;
+    padding:30px;
+    width:100%;
+    max-width:360px;
+    text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.3);
+  }
+  .modal-box h2{
+    margin:0 0 16px;
+    color:#a81815;
+    font-size:22px;
+  }
+  .modal-box input{
+    width:100%;
+    padding:12px;
+    font-size:18px;
+    text-align:center;
+    border:2px solid #ccc;
+    border-radius:8px;
+    box-sizing:border-box;
+    margin-bottom:16px;
+  }
+  .modal-box input:focus{
+    outline:none;
+    border-color:#a81815;
+  }
+  .modal-buttons{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+  }
 </style>
 </head>
 <body>
@@ -163,8 +212,21 @@
     <div class="status-text" id="statusText">Kamera wird gestartet …</div>
 
     <div class="controls">
-      <button class="action-btn" id="captureBtn" disabled>📸 Bild aufnehmen</button>
+      <button class="action-btn" id="captureBtn" disabled>📸 Bild aufnehmen (5 Sek)</button>
       <button class="action-btn secondary" id="retakeBtn" style="display:none;">↻ Neues Bild</button>
+      <button class="action-btn save" id="saveBtn" style="display:none;">💾 Speichern</button>
+    </div>
+  </div>
+
+  <!-- Bib-Nummer Eingabe -->
+  <div class="modal-overlay" id="bibModal">
+    <div class="modal-box">
+      <h2>Startnummer eingeben</h2>
+      <input type="number" id="bibInput" placeholder="z. B. 123" inputmode="numeric">
+      <div class="modal-buttons">
+        <button class="action-btn secondary" id="bibCancelBtn">Abbrechen</button>
+        <button class="action-btn save" id="bibConfirmBtn">Speichern</button>
+      </div>
     </div>
   </div>
 
@@ -176,8 +238,25 @@
     const statusText = document.getElementById('statusText');
     const captureBtn = document.getElementById('captureBtn');
     const retakeBtn = document.getElementById('retakeBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const bibModal = document.getElementById('bibModal');
+    const bibInput = document.getElementById('bibInput');
+    const bibCancelBtn = document.getElementById('bibCancelBtn');
+    const bibConfirmBtn = document.getElementById('bibConfirmBtn');
+
+    // RaceResult API-Zugangsdaten
+    const RR_EVENT_ID = "410823";
+    const RR_API_KEY = "JVO4S5NUVOQJ7AHC2IHDVE9H2BLX9HWY";
+    const RR_FIELD_NAME = "FinishPic";
+    const RR_API_URL = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_API_KEY}`;
+
+    // Cloudinary-Zugangsdaten (unsigned upload)
+    const CLOUDINARY_CLOUD_NAME = "fqcfrlxz";
+    const CLOUDINARY_UPLOAD_PRESET = "JumpAndPumpBW";
+    const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
     let stream = null;
+    let lastImageBlob = null; // zuletzt aufgenommenes Bild als Blob (für Cloudinary-Upload)
 
     async function startCamera(){
       try{
@@ -210,14 +289,22 @@
     }
 
     function takePhoto(){
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      // Bild etwas verkleinern, damit der Upload schneller geht
+      const maxWidth = 1200;
+      const scale = Math.min(1, maxWidth / video.videoWidth);
+      canvas.width = video.videoWidth * scale;
+      canvas.height = video.videoHeight * scale;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      photo.src = canvas.toDataURL('image/png');
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      photo.src = dataUrl;
       photo.style.display = "block";
       video.style.display = "none";
+
+      canvas.toBlob((blob) => {
+        lastImageBlob = blob;
+      }, 'image/jpeg', 0.9);
 
       if(stream){
         stream.getTracks().forEach(track => track.stop());
@@ -226,20 +313,97 @@
       statusText.textContent = "Bild aufgenommen!";
       captureBtn.style.display = "none";
       retakeBtn.style.display = "inline-block";
+      saveBtn.style.display = "inline-block";
     }
 
     function retake(){
       photo.style.display = "none";
       video.style.display = "block";
       retakeBtn.style.display = "none";
+      saveBtn.style.display = "none";
       captureBtn.style.display = "inline-block";
       captureBtn.disabled = false;
+      lastImageBlob = null;
       statusText.textContent = "Kamera wird neu gestartet …";
       startCamera();
     }
 
+    function openBibModal(){
+      bibInput.value = "";
+      bibModal.style.display = "flex";
+      setTimeout(() => bibInput.focus(), 50);
+    }
+
+    function closeBibModal(){
+      bibModal.style.display = "none";
+    }
+
+    async function saveToRaceResult(){
+      const bib = bibInput.value.trim();
+      if(!bib){
+        bibInput.focus();
+        return;
+      }
+      if(!lastImageBlob){
+        statusText.textContent = "Kein Bild zum Speichern vorhanden.";
+        closeBibModal();
+        return;
+      }
+
+      closeBibModal();
+      saveBtn.disabled = true;
+
+      try{
+        // Schritt 1: Bild zu Cloudinary hochladen
+        statusText.textContent = `Bild wird hochgeladen …`;
+
+        const formData = new FormData();
+        formData.append('file', lastImageBlob, `bib_${bib}.jpg`);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        const uploadResponse = await fetch(CLOUDINARY_UPLOAD_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        const uploadData = await uploadResponse.json();
+
+        if(!uploadResponse.ok || !uploadData.secure_url){
+          statusText.textContent = `Fehler beim Hochladen zu Cloudinary: ${JSON.stringify(uploadData)}`;
+          saveBtn.disabled = false;
+          return;
+        }
+
+        const imageUrl = uploadData.secure_url;
+
+        // Schritt 2: Bild-URL in RaceResult speichern
+        statusText.textContent = `Bild hochgeladen – wird jetzt für Startnummer ${bib} in RaceResult gespeichert …`;
+
+        const rrUrl = `${RR_API_URL}?bib=${encodeURIComponent(bib)}&fieldname=${encodeURIComponent(RR_FIELD_NAME)}&value=${encodeURIComponent(imageUrl)}&nohistory=0`;
+
+        const rrResponse = await fetch(rrUrl, { method: 'POST' });
+        const rrText = await rrResponse.text();
+
+        if(rrResponse.ok){
+          statusText.textContent = `Bild erfolgreich für Startnummer ${bib} gespeichert.`;
+        } else {
+          statusText.textContent = `Bild wurde hochgeladen, aber Fehler beim Speichern in RaceResult (${rrResponse.status}): ${rrText}`;
+        }
+      }catch(err){
+        statusText.textContent = "Fehler beim Speichern: " + err.message;
+      }finally{
+        saveBtn.disabled = false;
+      }
+    }
+
     captureBtn.addEventListener('click', runCountdownAndCapture);
     retakeBtn.addEventListener('click', retake);
+    saveBtn.addEventListener('click', openBibModal);
+    bibCancelBtn.addEventListener('click', closeBibModal);
+    bibConfirmBtn.addEventListener('click', saveToRaceResult);
+    bibInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') saveToRaceResult();
+    });
 
     startCamera();
   </script>
