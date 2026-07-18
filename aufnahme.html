@@ -83,18 +83,21 @@
     color:#222;
     font-weight:bold;
     background:#fff;
-    padding:12px 28px;
+    padding:16px 32px;
     border-radius:10px;
     box-shadow:0 2px 8px rgba(0,0,0,.15);
-  }
-  .bib-display span{
-    color:#a81815;
-    font-size:40px;
-  }
-  .participant-name{
-    font-size:20px;
-    color:#333;
     text-align:center;
+  }
+  .bib-display #nameLine{
+    color:#222;
+  }
+  .bib-display #nameLine .bib-number{
+    color:#a81815;
+  }
+  .bib-display #clubLine{
+    font-size:32px;
+    color:#666;
+    margin-top:4px;
   }
   .cam-stage{
     position:relative;
@@ -181,8 +184,10 @@
   </div>
 
   <div class="content">
-    <div class="bib-display">Startnummer: <span id="bibDisplay">–</span></div>
-    <div class="participant-name" id="participantName"></div>
+    <div class="bib-display" id="bibDisplayBox">
+      <div id="nameLine">–</div>
+      <div id="clubLine" style="display:none;"></div>
+    </div>
 
     <div class="cam-stage" id="camStage">
       <video id="video" autoplay playsinline muted></video>
@@ -203,8 +208,8 @@
   </div>
 
   <script>
-    const bibDisplay = document.getElementById('bibDisplay');
-    const participantName = document.getElementById('participantName');
+    const nameLine = document.getElementById('nameLine');
+    const clubLine = document.getElementById('clubLine');
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const photo = document.getElementById('photo');
@@ -238,7 +243,7 @@
       statusText.textContent = "Keine Startnummer übergeben – bitte über die vorherige Seite starten.";
       captureBtn.disabled = true;
     } else {
-      bibDisplay.textContent = currentBib;
+      nameLine.innerHTML = `<span class="bib-number">#${currentBib}</span>`;
       startCamera();
       loadParticipantInfo(currentBib);
     }
@@ -259,11 +264,13 @@
         const nachname = row["Nachname"] || "";
         const verein = row["Verein"] || "";
 
-        let text = `${vorname} ${nachname}`.trim();
+        const namePart = `${vorname} ${nachname}`.trim();
+        nameLine.innerHTML = `${namePart ? namePart + ' ' : ''}<span class="bib-number">#${bib}</span>`;
+
         if(verein.trim()){
-          text += ` (${verein.trim()})`;
+          clubLine.textContent = verein.trim();
+          clubLine.style.display = "block";
         }
-        participantName.textContent = text;
       }catch(err){
         // Falls das Laden fehlschlägt, bleibt die Namensanzeige einfach leer
       }
