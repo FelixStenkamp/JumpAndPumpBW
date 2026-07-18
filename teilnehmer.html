@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Teilnehmer – Jump & Pump Bad Waldsee</title>
+<style>
+  html,body{
+    height:100%;
+    scrollbar-width:none;
+  }
+  body::-webkit-scrollbar{
+    display:none;
+  }
+  body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    background:#f4f4f4;
+    min-height:100vh;
+    padding:0;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+  }
+  .header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    padding:20px 40px;
+  }
+  .header-text{
+    text-align:left;
+  }
+  .header-text .kicker{
+    display:block;
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:#a81815;
+    font-weight:bold;
+    margin-bottom:4px;
+  }
+  .header-text h1{
+    margin:0;
+    font-size:32px;
+    font-weight:bold;
+    color:#222;
+    border-left:6px solid #a81815;
+    padding-left:14px;
+  }
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#a81815;
+    color:#fff;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:16px;
+    padding:10px 18px;
+    border-radius:8px;
+    transition:.2s;
+    white-space:nowrap;
+  }
+  .back-link:hover{
+    transform:scale(1.05);
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+  }
+  .content{
+    flex:1;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+    padding:20px;
+  }
+  .bib-box{
+    background:#fff;
+    border-radius:12px;
+    padding:40px;
+    width:100%;
+    max-width:360px;
+    text-align:center;
+    box-shadow:0 4px 16px rgba(0,0,0,.15);
+  }
+  .bib-box h2{
+    margin:0 0 20px;
+    color:#a81815;
+    font-size:24px;
+  }
+  .bib-box input{
+    width:100%;
+    padding:14px;
+    font-size:20px;
+    text-align:center;
+    border:2px solid #ccc;
+    border-radius:8px;
+    box-sizing:border-box;
+    margin-bottom:20px;
+  }
+  .bib-box input:focus{
+    outline:none;
+    border-color:#a81815;
+  }
+  .action-btn{
+    background:#a81815;
+    color:#fff;
+    border:none;
+    font-weight:bold;
+    font-size:18px;
+    padding:14px 28px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .action-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+  }
+</style>
+</head>
+<body>
 
+  <div class="header">
+    <div class="header-text">
+      <span class="kicker">Jump & Pump Bad Waldsee 2027</span>
+      <h1>Teilnehmer</h1>
+    </div>
+    <a class="back-link" href="index.html">&larr; Zurück zur Übersicht</a>
+  </div>
+
+  <div class="content">
+    <div class="bib-box">
+      <h2>Startnummer eingeben</h2>
+      <input type="text" id="bibInput" placeholder="z. B. 123" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <div>
+        <button class="action-btn" id="bibSubmitBtn">Weiter</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bibInput = document.getElementById('bibInput');
+    const bibSubmitBtn = document.getElementById('bibSubmitBtn');
+
+    function goToParticipant(){
+      const bib = bibInput.value.trim();
+      if(!bib){
+        bibInput.focus();
+        return;
+      }
+      window.location.href = `teilnehmerseite.html?bib=${encodeURIComponent(bib)}`;
+    }
+
+    bibSubmitBtn.addEventListener('click', goToParticipant);
+    bibInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') goToParticipant(); });
+  </script>
+
+</body>
+</html>
