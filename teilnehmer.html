@@ -104,6 +104,42 @@
     outline:none;
     border-color:#a81815;
   }
+
+  .keypad{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:4px;
+    width:65%;
+    margin:0 auto 20px;
+  }
+  .keypad-btn{
+    background:#f4f4f4;
+    border:2px solid #ddd;
+    border-radius:50%;
+    aspect-ratio:1;
+    width:90%;
+    justify-self:center;
+    font-size:16px;
+    font-weight:bold;
+    color:#222;
+    padding:0;
+    cursor:pointer;
+    transition:.15s;
+    user-select:none;
+    -webkit-user-select:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .keypad-btn:active{
+    background:#a81815;
+    color:#fff;
+    border-color:#a81815;
+    transform:scale(0.96);
+  }
+  .keypad-btn.wide{
+    font-size:12px;
+  }
   .action-btn{
     background:#a81815;
     color:#fff;
@@ -134,7 +170,21 @@
   <div class="content">
     <div class="bib-box">
       <h2>Startnummer eingeben</h2>
-      <input type="text" id="bibInput" placeholder="z. B. 123" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <input type="text" id="bibInput" placeholder="z. B. 123" inputmode="none" pattern="[0-9]*" autocomplete="off" readonly>
+      <div class="keypad" id="keypad">
+        <button type="button" class="keypad-btn" data-digit="1">1</button>
+        <button type="button" class="keypad-btn" data-digit="2">2</button>
+        <button type="button" class="keypad-btn" data-digit="3">3</button>
+        <button type="button" class="keypad-btn" data-digit="4">4</button>
+        <button type="button" class="keypad-btn" data-digit="5">5</button>
+        <button type="button" class="keypad-btn" data-digit="6">6</button>
+        <button type="button" class="keypad-btn" data-digit="7">7</button>
+        <button type="button" class="keypad-btn" data-digit="8">8</button>
+        <button type="button" class="keypad-btn" data-digit="9">9</button>
+        <button type="button" class="keypad-btn wide" data-action="clear">C</button>
+        <button type="button" class="keypad-btn" data-digit="0">0</button>
+        <button type="button" class="keypad-btn wide" data-action="back">⌫</button>
+      </div>
       <div>
         <button class="action-btn" id="bibSubmitBtn">Weiter</button>
       </div>
@@ -144,6 +194,20 @@
   <script>
     const bibInput = document.getElementById('bibInput');
     const bibSubmitBtn = document.getElementById('bibSubmitBtn');
+    const keypad = document.getElementById('keypad');
+
+    keypad.addEventListener('click', (e) => {
+      const btn = e.target.closest('.keypad-btn');
+      if(!btn) return;
+
+      if(btn.dataset.digit !== undefined){
+        bibInput.value += btn.dataset.digit;
+      } else if(btn.dataset.action === 'back'){
+        bibInput.value = bibInput.value.slice(0, -1);
+      } else if(btn.dataset.action === 'clear'){
+        bibInput.value = '';
+      }
+    });
 
     function goToParticipant(){
       const bib = bibInput.value.trim();
