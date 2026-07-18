@@ -6,6 +6,8 @@
 <style>
   html,body{
     height:100%;
+    margin:0;
+    overflow:hidden;
     scrollbar-width:none;
   }
   body::-webkit-scrollbar{
@@ -13,41 +15,51 @@
   }
   body{
     font-family:Arial,sans-serif;
-    margin:0;
+    background:#111;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* 16:9-Bühne, passt sich an Hoch- oder Querformat an */
+  .stage{
+    width:min(100vw, 177.78vh);
+    height:min(100vh, 56.25vw);
     background:#f4f4f4;
-    min-height:100vh;
-    padding:0;
-    box-sizing:border-box;
     display:flex;
     flex-direction:column;
+    overflow:hidden;
+    box-shadow:0 0 40px rgba(0,0,0,.5);
   }
+
   .header{
     display:flex;
     align-items:center;
     justify-content:space-between;
     flex-wrap:wrap;
-    gap:12px;
-    padding:20px 40px;
+    gap:10px;
+    padding:1.5vh 3vh;
+    flex-shrink:0;
   }
   .header-text{
     text-align:left;
   }
   .header-text .kicker{
     display:block;
-    font-size:14px;
-    letter-spacing:2px;
+    font-size:1.4vh;
+    letter-spacing:1.5px;
     text-transform:uppercase;
     color:#a81815;
     font-weight:bold;
-    margin-bottom:4px;
+    margin-bottom:2px;
   }
   .header-text h1{
     margin:0;
-    font-size:32px;
+    font-size:3vh;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
-    padding-left:14px;
+    border-left:5px solid #a81815;
+    padding-left:12px;
   }
   .back-link{
     display:inline-flex;
@@ -57,8 +69,8 @@
     color:#fff;
     text-decoration:none;
     font-weight:bold;
-    font-size:16px;
-    padding:10px 18px;
+    font-size:1.6vh;
+    padding:1vh 2vh;
     border-radius:8px;
     transition:.2s;
     white-space:nowrap;
@@ -67,26 +79,30 @@
     transform:scale(1.05);
     box-shadow:0 4px 12px rgba(0,0,0,.2);
   }
+
   .content{
     flex:1;
+    min-height:0;
     width:100%;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     box-sizing:border-box;
-    padding:20px;
-    gap:16px;
+    padding:1.5vh 3vh;
+    gap:1.5vh;
   }
+
   .bib-display{
-    font-size:32px;
+    font-size:2.6vh;
     color:#222;
     font-weight:bold;
     background:#fff;
-    padding:16px 32px;
+    padding:1.2vh 3vh;
     border-radius:10px;
     box-shadow:0 2px 8px rgba(0,0,0,.15);
     text-align:center;
+    flex-shrink:0;
   }
   .bib-display #nameLine{
     color:#222;
@@ -95,14 +111,17 @@
     color:#a81815;
   }
   .bib-display #clubLine{
-    font-size:32px;
+    font-size:2.6vh;
     color:#666;
-    margin-top:4px;
+    margin-top:2px;
   }
+
   .cam-stage{
     position:relative;
-    width:90%;
-    max-width:800px;
+    flex:1;
+    min-height:0;
+    width:auto;
+    max-width:100%;
     aspect-ratio:4/3;
     background:#000;
     border-radius:12px;
@@ -124,30 +143,33 @@
     align-items:center;
     justify-content:center;
     background:rgba(0,0,0,.35);
-    font-size:120px;
+    font-size:12vh;
     font-weight:bold;
     color:#fff;
     text-shadow:0 4px 12px rgba(0,0,0,.5);
   }
+
   .status-text{
-    font-size:16px;
+    font-size:1.6vh;
     color:#555;
     text-align:center;
-    min-height:20px;
+    min-height:2vh;
+    flex-shrink:0;
   }
   .controls{
     display:flex;
-    gap:16px;
+    gap:1.5vh;
     flex-wrap:wrap;
     justify-content:center;
+    flex-shrink:0;
   }
   .action-btn{
     background:#a81815;
     color:#fff;
     border:none;
     font-weight:bold;
-    font-size:18px;
-    padding:14px 28px;
+    font-size:1.8vh;
+    padding:1.2vh 2.5vh;
     border-radius:8px;
     cursor:pointer;
     transition:.2s;
@@ -175,36 +197,40 @@
 </head>
 <body>
 
-  <div class="header">
-    <div class="header-text">
-      <span class="kicker">Jump & Pump Bad Waldsee 2027</span>
-      <h1>Bild aufnehmen</h1>
-    </div>
-    <a class="back-link" href="index.html">&larr; Zurück zur Übersicht</a>
-  </div>
+  <div class="stage">
 
-  <div class="content">
-    <div class="bib-display" id="bibDisplayBox">
-      <div id="nameLine">–</div>
-      <div id="clubLine" style="display:none;"></div>
+    <div class="header">
+      <div class="header-text">
+        <span class="kicker">Jump & Pump Bad Waldsee 2027</span>
+        <h1>Bild aufnehmen</h1>
+      </div>
+      <a class="back-link" href="index.html">&larr; Zurück zur Übersicht</a>
     </div>
 
-    <div class="cam-stage" id="camStage">
-      <video id="video" autoplay playsinline muted></video>
-      <canvas id="canvas" style="display:none;"></canvas>
-      <img id="photo" style="display:none;" alt="Aufgenommenes Bild">
-      <div class="countdown-overlay" id="countdownOverlay">5</div>
+    <div class="content">
+      <div class="bib-display" id="bibDisplayBox">
+        <div id="nameLine">–</div>
+        <div id="clubLine" style="display:none;"></div>
+      </div>
+
+      <div class="cam-stage" id="camStage">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <img id="photo" style="display:none;" alt="Aufgenommenes Bild">
+        <div class="countdown-overlay" id="countdownOverlay">5</div>
+      </div>
+
+      <div class="status-text" id="statusText">Kamera wird gestartet …</div>
+
+      <div class="controls">
+        <button class="action-btn" id="captureBtn" disabled>📸 Bild aufnehmen (5 Sek)</button>
+        <button class="action-btn secondary" id="retakeBtn" style="display:none;">↻ Neues Bild</button>
+        <button class="action-btn save" id="saveBtn" style="display:none;">💾 Speichern</button>
+        <a class="action-btn secondary" id="newBibBtn" href="cam.html" style="display:none;">🔁 Andere Startnummer</a>
+        <a class="action-btn" id="homeBtn" href="index.html" style="display:none;">🏠 Zur Übersicht</a>
+      </div>
     </div>
 
-    <div class="status-text" id="statusText">Kamera wird gestartet …</div>
-
-    <div class="controls">
-      <button class="action-btn" id="captureBtn" disabled>📸 Bild aufnehmen (5 Sek)</button>
-      <button class="action-btn secondary" id="retakeBtn" style="display:none;">↻ Neues Bild</button>
-      <button class="action-btn save" id="saveBtn" style="display:none;">💾 Speichern</button>
-      <a class="action-btn secondary" id="newBibBtn" href="cam.html" style="display:none;">🔁 Andere Startnummer</a>
-      <a class="action-btn" id="homeBtn" href="index.html" style="display:none;">🏠 Zur Übersicht</a>
-    </div>
   </div>
 
   <script>
@@ -235,7 +261,6 @@
     let stream = null;
     let lastImageBlob = null;
 
-    // Startnummer aus der URL lesen (?bib=123)
     const urlParams = new URLSearchParams(window.location.search);
     const currentBib = urlParams.get('bib');
 
