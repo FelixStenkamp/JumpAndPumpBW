@@ -6,6 +6,10 @@
 <style>
   html,body{
     height:100%;
+    scrollbar-width:none;
+  }
+  body::-webkit-scrollbar{
+    display:none;
   }
   body{
     font-family:Arial,sans-serif;
@@ -16,12 +20,6 @@
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
-    background-image:url("images/background_live.jpg");
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
-    background-attachment:fixed;
-    scrollbar-width:none;
   }
   .header{
     display:flex;
@@ -77,14 +75,20 @@
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
+    background-image:url("images/background.jpg");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    scrollbar-width:none;
+  }
+  .content::-webkit-scrollbar{
+    display:none;
   }
   .content .RRPublish{
     flex:1;
     width:90%;
     margin:auto;
-  }
-  .RRPublish, .RRPublish *{ 
-    background-color: transparent !important;
   }
   .RRPublish div.ListControl{
     display:none !important;
@@ -95,8 +99,9 @@
   .RRPublish table.MainTable td.listGrouping{
     font-size:larger !important;
   }
-  .RRPublish table.MainTable > tbody > tr.LastRecordLine > td{
-    border-bottom: black 1px solid !important;
+  .RRPublish,
+  .RRPublish *{
+    background-color:transparent !important;
   }
 </style>
 </head>
@@ -119,19 +124,6 @@
       rrp.ShowInfoText = false;
     </script>
   </div>
-    <style>
-        .RRPublish div.ListControl {
-            display: none !important;
-        }
-        .RRPublish div.SelectorParent > div.Selector {
-            display: none !important;
-        }
-        .RRPublish table.MainTable td.listGrouping {
-            font-size: larger !important;
-        }
-        .content {
-            scrollbar-width: none !important;
-        }
-    </style>
+
 </body>
 </html>
