@@ -139,6 +139,13 @@
           img.style.borderRadius = "8px";
           img.style.display = "block";
           img.style.margin = "12px 0";
+          img.onerror = function(){
+            const fallback = document.createElement('span');
+            fallback.textContent = "Das Bild wird noch hochgeladen – bitte in Kürze erneut versuchen.";
+            fallback.style.color = "#a81815";
+            fallback.style.fontStyle = "italic";
+            img.replaceWith(fallback);
+          };
           fragment.appendChild(img);
 
           if(after.trim()) fragment.appendChild(document.createTextNode(after));
@@ -151,7 +158,13 @@
       const observer = new MutationObserver(() => {
         replaceImageUrlsWithImages(targetDiv);
       });
-      observer.observe(targetDiv, { childList: true, subtree: true });
+      observer.observe(targetDiv, { childList: true, subtree: true, characterData: true });
+
+      // Zusätzliches Sicherheitsnetz: falls der Text ohne erkennbare Mutation gesetzt wird,
+      // prüfen wir sicherheitshalber noch ein paar Mal in den ersten Sekunden nach dem Laden.
+      [300, 800, 1500, 3000].forEach(delay => {
+        setTimeout(() => replaceImageUrlsWithImages(targetDiv), delay);
+      });
     </script>
   </div>
 
