@@ -6,6 +6,10 @@
 <style>
   html,body{
     height:100%;
+    scrollbar-width:none;
+  }
+  body::-webkit-scrollbar{
+    display:none;
   }
   body{
     font-family:Arial,sans-serif;
@@ -175,7 +179,7 @@
 
     <div class="bib-box" id="bibSection">
       <h2>Startnummer eingeben</h2>
-      <input type="number" id="bibInput" placeholder="z. B. 123" inputmode="numeric">
+      <input type="text" id="bibInput" placeholder="z. B. 123" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
       <div class="controls">
         <button class="action-btn" id="bibSubmitBtn">Weiter</button>
       </div>
