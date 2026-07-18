@@ -6,6 +6,10 @@
 <style>
   html,body{
     height:100%;
+    scrollbar-width:none;
+  }
+  body::-webkit-scrollbar{
+    display:none;
   }
   body{
     font-family:Arial,sans-serif;
@@ -66,16 +70,21 @@
   .content{
     flex:1;
     width:100%;
+    background:#fff;
     overflow:auto;
     padding:0;
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
+    scrollbar-width:none;
+  }
+  .content::-webkit-scrollbar{
+    display:none;
   }
   .content .RRPublish{
     flex:1;
     width:90%;
-    margin:auto;
+    margin:0 auto;
   }
 </style>
 </head>
@@ -83,8 +92,8 @@
 
   <div class="header">
     <div class="header-text">
-      <span class="kicker">Jump & Pump Bad Waldsee 2027</span>
-      <h1>ERGEBNISSE</h1>
+      <span class="kicker">Willkommen bei</span>
+      <h1>Jump & Pump Bad Waldsee 2027</h1>
     </div>
     <a class="back-link" href="index.html">&larr; Zurück zur Übersicht</a>
   </div>
@@ -94,22 +103,10 @@
     <script type="text/javascript" src="https://my.raceresult.com/RRPublish/load.js.php?lang=de"></script>
     <script type="text/javascript">
       var rrp = new RRPublish(document.getElementById("divRRPublish_results"), 410823, "results");
-      rrp.ShowTimerLogo = true;
+      rrp.ShowTimerLogo = false;
       rrp.ShowInfoText = false;
     </script>
-    <style>
-        .RRPublish div.ListControl {
-            display: none !important;
-        }
-        .RRPublish div.SelectorParent > div.Selector {
-            display: none !important;
-        }
-        .RRPublish table.MainTable td.listGrouping {
-            font-size: larger !important;
-        }
-        .content {
-            scrollbar-width: none !important;
-        }
-    </style>
+  </div>
+
 </body>
 </html>
