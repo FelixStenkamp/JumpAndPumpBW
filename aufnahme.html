@@ -6,6 +6,10 @@
 <style>
   html,body{
     height:100%;
+    scrollbar-width:none;
+  }
+  body::-webkit-scrollbar{
+    display:none;
   }
   body{
     font-family:Arial,sans-serif;
@@ -86,6 +90,11 @@
   .bib-display span{
     color:#a81815;
     font-size:40px;
+  }
+  .participant-name{
+    font-size:20px;
+    color:#333;
+    text-align:center;
   }
   .cam-stage{
     position:relative;
@@ -173,6 +182,7 @@
 
   <div class="content">
     <div class="bib-display">Startnummer: <span id="bibDisplay">–</span></div>
+    <div class="participant-name" id="participantName"></div>
 
     <div class="cam-stage" id="camStage">
       <video id="video" autoplay playsinline muted></video>
@@ -194,6 +204,7 @@
 
   <script>
     const bibDisplay = document.getElementById('bibDisplay');
+    const participantName = document.getElementById('participantName');
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const photo = document.getElementById('photo');
@@ -207,8 +218,10 @@
 
     const RR_EVENT_ID = "410823";
     const RR_WRITE_API_KEY = "JVO4S5NUVOQJ7AHC2IHDVE9H2BLX9HWY";
+    const RR_READ_API_KEY = "X9JQNUP2KLJPPA16B6YI7I1MDUUN60I8";
     const RR_FIELD_NAME = "FinishPic";
     const RR_WRITE_URL = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_WRITE_API_KEY}`;
+    const RR_READ_URL = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_READ_API_KEY}`;
 
     const CLOUDINARY_CLOUD_NAME = "fqcfrlxz";
     const CLOUDINARY_UPLOAD_PRESET = "JumpAndPumpBW";
@@ -227,6 +240,33 @@
     } else {
       bibDisplay.textContent = currentBib;
       startCamera();
+      loadParticipantInfo(currentBib);
+    }
+
+    async function loadParticipantInfo(bib){
+      try{
+        const url = `${RR_READ_URL}?filterbib=${encodeURIComponent(bib)}&listformat=JSON`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if(!Array.isArray(data) || data.length === 0) return;
+
+        const bibKey = Object.keys(data[0]).find(k => k.toLowerCase().replace(/\s/g,'') === 'bib');
+        const row = data.find(r => String(r[bibKey]).trim() === String(bib).trim());
+        if(!row) return;
+
+        const vorname = row["Vorname"] || "";
+        const nachname = row["Nachname"] || "";
+        const verein = row["Verein"] || "";
+
+        let text = `${vorname} ${nachname}`.trim();
+        if(verein.trim()){
+          text += ` (${verein.trim()})`;
+        }
+        participantName.textContent = text;
+      }catch(err){
+        // Falls das Laden fehlschlägt, bleibt die Namensanzeige einfach leer
+      }
     }
 
     async function startCamera(){
