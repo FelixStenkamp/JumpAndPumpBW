@@ -115,7 +115,7 @@
       const pid = parseInt(urlParams.get("pid")) || 0;
       const bib = parseInt(urlParams.get("bib")) || 0;
 
-      let rrp = new RRParticipantView(document.getElementById("divRRParticipantView"), RR_EVENT_ID, "details", pid, bib);
+      let rrp = new RRParticipantView(document.getElementById("divRRParticipantView"), RR_EVENT_ID, "detailsmonitor", pid, bib);
       rrp.ShowTimerLogo = true;
 
       // RaceResult zeigt die Bild-URL nur als reinen Text an – wir wandeln das automatisch in ein echtes Bild um
