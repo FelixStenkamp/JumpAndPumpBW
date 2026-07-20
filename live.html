@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Live – Jump & Pump Bad Waldsee</title>
 <style>
+  :root{
+    --accent-color:#a81815;
+  }
   html,body{
     height:100%;
     scrollbar-width:none;
@@ -43,7 +46,7 @@
     font-size:14px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:#a81815;
+    color:var(--accent-color);
     font-weight:bold;
     margin-bottom:4px;
   }
@@ -52,14 +55,14 @@
     font-size:32px;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
+    border-left:6px solid var(--accent-color);
     padding-left:14px;
   }
   .back-link{
     display:inline-flex;
     align-items:center;
     gap:6px;
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     text-decoration:none;
     font-weight:bold;
@@ -123,11 +126,14 @@
 
   <div class="content">
     <div id="divRRPublish" class="RRPublish"></div>
+    <script type="text/javascript" src="variables.js"></script>
     <script type="text/javascript" src="https://my.raceresult.com/RRPublish/load.js?lang=de"></script>
     <script type="text/javascript">
-      let rrp = new RRPublish(document.getElementById("divRRPublish"), 410823, "live");
+      let rrp = new RRPublish(document.getElementById("divRRPublish"), RR_EVENT_ID, RR_PAGE_TYPE_LIVE);
       rrp.ShowTimerLogo = true;
       rrp.ShowInfoText = false;
+
+      pollForBrandColor(document.getElementById("divRRPublish"));
     </script>
   </div>
 

@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Jump & Pump Bad Waldsee</title>
+<script type="text/javascript" src="variables.js"></script>
 <style>
+  :root{
+    --accent-color:#a81815;
+  }
   html,body{
     scrollbar-width:none;
   }
@@ -29,7 +33,7 @@
     font-size:14px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:#a81815;
+    color:var(--accent-color);
     font-weight:bold;
     margin-bottom:4px;
   }
@@ -38,7 +42,7 @@
     font-size:32px;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
+    border-left:6px solid var(--accent-color);
     padding-left:14px;
   }
   .container{
@@ -55,7 +59,7 @@
     flex:1;
     min-width:180px;
     min-height:250px;
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     display:flex;
     justify-content:center;
@@ -89,6 +93,10 @@
     <a class="box" href="cam.html">Bild aufnehmen</a>
     <a class="box" href="teilnehmer.html">Teilnehmer anzeigen</a>
   </div>
+
+  <script>
+    loadBrandColorStandalone();
+  </script>
 
 </body>
 </html>

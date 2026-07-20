@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Teilnehmerseite – Jump & Pump Bad Waldsee</title>
 <style>
+  :root{
+    --accent-color:#a81815;
+  }
   html,body{
     height:100%;
     scrollbar-width:none;
@@ -37,7 +40,7 @@
     font-size:14px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:#a81815;
+    color:var(--accent-color);
     font-weight:bold;
     margin-bottom:4px;
   }
@@ -46,7 +49,7 @@
     font-size:32px;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
+    border-left:6px solid var(--accent-color);
     padding-left:14px;
   }
   .header-buttons{
@@ -58,7 +61,7 @@
     display:inline-flex;
     align-items:center;
     gap:6px;
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     text-decoration:none;
     font-weight:bold;
@@ -78,7 +81,7 @@
   .content{
     flex:1;
     width:100%;
-    background:#fff;
+    background-color: #f4f4f4;
     overflow:auto;
     box-sizing:border-box;
     padding:20px 40px;
@@ -92,6 +95,10 @@
   }
   .RRParticipantView .RRTopBar{
     display:none !important;
+  }
+  .RRElements .RRBox {
+    background-color: #f4f4f4 !important;
+    box-shadow: none !important;
   }
 </style>
 </head>
@@ -110,16 +117,18 @@
 
   <div class="content">
     <div id="divRRParticipantView" class="RRParticipantView"></div>
+    <script type="text/javascript" src="variables.js"></script>
     <script type="text/javascript" src="https://my.raceresult.com/RRParticipantView/load.js?lang=de"></script>
     <script type="text/javascript">
-      const RR_EVENT_ID = 410823;
       const urlParams = new URLSearchParams(window.location.search);
       /* Entweder pid oder bib wird genutzt. Der nicht verwendete Wert wird auf 0 gesetzt. */
       const pid = parseInt(urlParams.get("pid")) || 0;
       const bib = parseInt(urlParams.get("bib")) || 0;
 
-      let rrp = new RRParticipantView(document.getElementById("divRRParticipantView"), RR_EVENT_ID, "detailsmonitor", pid, bib);
+      let rrp = new RRParticipantView(document.getElementById("divRRParticipantView"), RR_EVENT_ID, RR_PAGE_TYPE_DETAILS, pid, bib);
       rrp.ShowTimerLogo = true;
+
+      pollForBrandColor(document.getElementById("divRRParticipantView"));
 
       // RaceResult zeigt die Bild-URL nur als reinen Text an – wir wandeln das automatisch in ein echtes Bild um
       const IMAGE_URL_REGEX = /https?:\/\/\S+\.(?:jpg|jpeg|png|gif|webp)(?:\?\S*)?/i;
@@ -153,7 +162,7 @@
           img.onerror = function(){
             const fallback = document.createElement('span');
             fallback.textContent = "Das Bild wird noch hochgeladen – bitte in Kürze erneut versuchen.";
-            fallback.style.color = "#a81815";
+            fallback.style.color = "var(--accent-color)";
             fallback.style.fontStyle = "italic";
             img.replaceWith(fallback);
           };

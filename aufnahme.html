@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Aufnahme – Jump & Pump Bad Waldsee</title>
+<script type="text/javascript" src="variables.js"></script>
 <style>
+  :root{
+    --accent-color:#a81815;
+  }
   html,body{
     height:100%;
     margin:0;
@@ -49,7 +53,7 @@
     font-size:14px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:#a81815;
+    color:var(--accent-color);
     font-weight:bold;
     margin-bottom:4px;
   }
@@ -58,14 +62,14 @@
     font-size:32px;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
+    border-left:6px solid var(--accent-color);
     padding-left:14px;
   }
   .back-link{
     display:inline-flex;
     align-items:center;
     gap:6px;
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     text-decoration:none;
     font-weight:bold;
@@ -108,7 +112,7 @@
     color:#222;
   }
   .bib-display #nameLine .bib-number{
-    color:#a81815;
+    color:var(--accent-color);
   }
   .bib-display #clubLine{
     font-size:2.6vh;
@@ -164,7 +168,7 @@
     flex-shrink:0;
   }
   .action-btn{
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     border:none;
     font-weight:bold;
@@ -246,17 +250,6 @@
     const saveBtn = document.getElementById('saveBtn');
     const newBibBtn = document.getElementById('newBibBtn');
     const homeBtn = document.getElementById('homeBtn');
-
-    const RR_EVENT_ID = "410823";
-    const RR_WRITE_API_KEY = "JVO4S5NUVOQJ7AHC2IHDVE9H2BLX9HWY";
-    const RR_READ_API_KEY = "X9JQNUP2KLJPPA16B6YI7I1MDUUN60I8";
-    const RR_FIELD_NAME = "FinishPic";
-    const RR_WRITE_URL = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_WRITE_API_KEY}`;
-    const RR_READ_URL = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_READ_API_KEY}`;
-
-    const CLOUDINARY_CLOUD_NAME = "fqcfrlxz";
-    const CLOUDINARY_UPLOAD_PRESET = "JumpAndPumpBW";
-    const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
     let stream = null;
     let lastImageBlob = null;
@@ -427,6 +420,8 @@
     captureBtn.addEventListener('click', runCountdownAndCapture);
     retakeBtn.addEventListener('click', retake);
     saveBtn.addEventListener('click', saveToRaceResult);
+
+    loadBrandColorStandalone();
   </script>
 
 </body>

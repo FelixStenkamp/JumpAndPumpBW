@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Teilnehmer – Jump & Pump Bad Waldsee</title>
+<script type="text/javascript" src="variables.js"></script>
 <style>
+  :root{
+    --accent-color:#a81815;
+  }
   html,body{
     height:100%;
     scrollbar-width:none;
@@ -37,7 +41,7 @@
     font-size:14px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:#a81815;
+    color:var(--accent-color);
     font-weight:bold;
     margin-bottom:4px;
   }
@@ -46,14 +50,14 @@
     font-size:32px;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
+    border-left:6px solid var(--accent-color);
     padding-left:14px;
   }
   .back-link{
     display:inline-flex;
     align-items:center;
     gap:6px;
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     text-decoration:none;
     font-weight:bold;
@@ -87,7 +91,7 @@
   }
   .bib-box h2{
     margin:0 0 20px;
-    color:#a81815;
+    color:var(--accent-color);
     font-size:24px;
   }
   .bib-box input{
@@ -102,7 +106,7 @@
   }
   .bib-box input:focus{
     outline:none;
-    border-color:#a81815;
+    border-color:var(--accent-color);
   }
 
   .keypad{
@@ -132,16 +136,16 @@
     justify-content:center;
   }
   .keypad-btn:active{
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
-    border-color:#a81815;
+    border-color:var(--accent-color);
     transform:scale(0.96);
   }
   .keypad-btn.wide{
     font-size:12px;
   }
   .action-btn{
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     border:none;
     font-weight:bold;
@@ -220,6 +224,8 @@
 
     bibSubmitBtn.addEventListener('click', goToParticipant);
     bibInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') goToParticipant(); });
+
+    loadBrandColorStandalone();
   </script>
 
 </body>

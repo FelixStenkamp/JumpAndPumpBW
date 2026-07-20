@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>Ergebnisse – Jump & Pump Bad Waldsee</title>
 <style>
+  :root{
+    --accent-color:#a81815;
+  }
   html,body{
     height:100%;
     scrollbar-width:none;
@@ -37,7 +40,7 @@
     font-size:14px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:#a81815;
+    color:var(--accent-color);
     font-weight:bold;
     margin-bottom:4px;
   }
@@ -46,14 +49,14 @@
     font-size:32px;
     font-weight:bold;
     color:#222;
-    border-left:6px solid #a81815;
+    border-left:6px solid var(--accent-color);
     padding-left:14px;
   }
   .back-link{
     display:inline-flex;
     align-items:center;
     gap:6px;
-    background:#a81815;
+    background:var(--accent-color);
     color:#fff;
     text-decoration:none;
     font-weight:bold;
@@ -70,7 +73,7 @@
   .content{
     flex:1;
     width:100%;
-    background:#fff;
+    background-color: #f4f4f4;
     overflow:auto;
     padding:0;
     box-sizing:border-box;
@@ -91,6 +94,9 @@
   }
   .RRPublish div.SelectorParent > div.Selector {
     display: none !important;
+  }
+  .RRPublish table.MainTable {
+    background-color: #f4f4f4 !important;
   }
   .RRPublish table.MainTable td.listGrouping {
     font-size: larger !important;
@@ -115,11 +121,14 @@
 
   <div class="content">
     <div id="divRRPublish_results" class="RRPublish"></div>
+    <script type="text/javascript" src="variables.js"></script>
     <script type="text/javascript" src="https://my.raceresult.com/RRPublish/load.js.php?lang=de"></script>
     <script type="text/javascript">
-      var rrp = new RRPublish(document.getElementById("divRRPublish_results"), 410823, "resmonitor");
+      var rrp = new RRPublish(document.getElementById("divRRPublish_results"), RR_EVENT_ID, RR_PAGE_TYPE_RESULTS);
       rrp.ShowTimerLogo = true;
       rrp.ShowInfoText = false;
+
+      pollForBrandColor(document.getElementById("divRRPublish_results"));
     </script>
   </div>
 
