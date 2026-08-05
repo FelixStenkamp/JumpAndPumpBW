@@ -1,4 +1,4 @@
-# Jump & Pump Bad Waldsee – Event-Monitor
+# Event-Monitor
 
 Kleines Web-Tool für die Veranstaltung, das mehrere RaceResult-Ansichten (Ergebnisse, Live, Teilnehmer) sowie eine Ziel-Foto-Station in einem einheitlichen Design bündelt. Rein statische HTML/JS-Seiten, lauffähig z. B. über GitHub Pages.
 
