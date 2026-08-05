@@ -8,6 +8,9 @@
 // RaceResult Event
 const RR_EVENT_ID = "410823";
 
+// Veranstaltungsname (wie er überall auf den Seiten angezeigt werden soll)
+const EVENT_NAME = "Jump & Pump Bad Waldsee 2027";
+
 // RaceResult API-Keys (Access Rights / Simple API)
 const RR_WRITE_API_KEY = "JVO4S5NUVOQJ7AHC2IHDVE9H2BLX9HWY"; // Custom-Key, nur "part/savevalue"
 const RR_READ_API_KEY  = "X9JQNUP2KLJPPA16B6YI7I1MDUUN60I8"; // List-Key (Bib, Finish Pic, Vorname, Nachname, Verein)
@@ -30,6 +33,16 @@ const CLOUDINARY_UPLOAD_PRESET = "JumpAndPumpBW";
 const RR_WRITE_URL = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_WRITE_API_KEY}`;
 const RR_READ_URL  = `https://api.raceresult.com/${RR_EVENT_ID}/${RR_READ_API_KEY}`;
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+// Setzt den Veranstaltungsnamen überall ein, wo ein Element die Klasse
+// "event-name" trägt, sowie im Browser-Tab-Titel (mit optionalem Präfix,
+// z. B. "Ergebnisse – Jump & Pump Bad Waldsee 2027").
+function applyEventName(titlePrefix){
+  document.querySelectorAll('.event-name').forEach(el => {
+    el.textContent = EVENT_NAME;
+  });
+  document.title = titlePrefix ? `${titlePrefix} – ${EVENT_NAME}` : EVENT_NAME;
+}
 
 /* ---------------------------------------------------------
    Veranstaltungsfarbe aus RaceResult übernehmen

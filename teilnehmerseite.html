@@ -106,7 +106,7 @@
 
   <div class="header">
     <div class="header-text">
-      <span class="kicker">Jump & Pump Bad Waldsee 2027</span>
+      <span class="kicker event-name">Jump & Pump Bad Waldsee 2027</span>
       <h1>Details</h1>
     </div>
     <div class="header-buttons">
@@ -129,6 +129,7 @@
       rrp.ShowTimerLogo = true;
 
       pollForBrandColor(document.getElementById("divRRParticipantView"));
+      applyEventName("Details");
 
       // RaceResult zeigt die Bild-URL nur als reinen Text an – wir wandeln das automatisch in ein echtes Bild um
       const IMAGE_URL_REGEX = /https?:\/\/\S+\.(?:jpg|jpeg|png|gif|webp)(?:\?\S*)?/i;
